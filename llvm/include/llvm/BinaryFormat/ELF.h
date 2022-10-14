@@ -325,6 +325,7 @@ enum {
   EM_VE = 251,            // NEC SX-Aurora VE
   EM_CSKY = 252,          // C-SKY 32-bit processor
   EM_LOONGARCH = 258,     // LoongArch
+  EM_SBF = 263            // Solana Bytecode Format
 };
 
 // Object file classes.
@@ -985,6 +986,16 @@ enum : unsigned {
 
   // Set when using an accelerator variant like sm_100a in the new ABI.
   EF_CUDA_ACCELERATORS = 0x8,
+};
+
+// SBF specific e_flags
+enum : unsigned {
+  EF_SBF_V2 = 0x20,
+};
+
+// ELF Relocation types for SBF.
+enum {
+#include "ELFRelocs/SBF.def"
 };
 
 // ELF Relocation types for BPF

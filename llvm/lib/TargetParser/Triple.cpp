@@ -2005,6 +2005,7 @@ Triple Triple::getBigEndianArchVariant() const {
   case Triple::r600:
   case Triple::renderscript32:
   case Triple::renderscript64:
+  case Triple::sbf:
   case Triple::shave:
   case Triple::spir64:
   case Triple::spir:

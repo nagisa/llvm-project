@@ -202,6 +202,7 @@ public:
     SUSE,
     OpenEmbedded,
     Intel,
+    Solana,
     Meta,
     LastVendorType = Meta
   };
@@ -823,6 +824,11 @@ public:
   bool isWALI() const {
     return getArch() == Triple::wasm32 && isOSLinux() &&
            getEnvironment() == Triple::MuslWALI;
+  }
+
+  /// Tests whether the OS is Solana.
+  bool isOSSolana() const {
+    return getOS() == Triple::SolanaOS;
   }
 
   /// Tests whether the target is the PS4 platform.

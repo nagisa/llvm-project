@@ -6,14 +6,16 @@ permissions:
 on:
   workflow_dispatch:
   push:
-    branches:
-      - 'release/**'
+    ignore-forks: true
+    #branches:
+    #  - 'release/**'
     paths:
       - 'llvm/**'
       - '.github/workflows/llvm-abi-tests.yml'
   pull_request:
-    branches:
-      - 'release/**'
+    ignore-forks: true
+    #branches:
+    #  - 'release/**'
     paths:
       - 'llvm/**'
       - '.github/workflows/llvm-abi-tests.yml'
@@ -26,7 +28,7 @@ concurrency:
 
 jobs:
   abi-dump-setup:
-    if: github.repository_owner == 'llvm'
+    # if: github.repository_owner == 'llvm'
     runs-on: ubuntu-24.04
     outputs:
       BASELINE_REF: ${{ steps.vars.outputs.BASELINE_REF }}
@@ -69,7 +71,7 @@ jobs:
           fi
 
   abi-dump:
-    if: github.repository_owner == 'llvm'
+    #if: github.repository_owner == 'llvm'
     needs: abi-dump-setup
     runs-on: ubuntu-24.04
     container:
@@ -130,7 +132,7 @@ jobs:
           path: llvm.symbols
 
   abi-compare:
-    if: github.repository_owner == 'llvm'
+    # if: github.repository_owner == 'llvm'
     runs-on: ubuntu-24.04
     container:
       image: "ghcr.io/llvm/ci-ubuntu-24.04-abi-tests@sha256:ef869c1d087258db22c2b19b93f585d53c0d0e70952aaf02d45866ad26a200a0" #ghcr.io/llvm/ci-ubuntu-24.04-abi-tests:bb0bd382ab2b

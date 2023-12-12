@@ -348,8 +348,6 @@ bool objdump::UnwindInfo;
 static bool Wide;
 std::string objdump::Prefix;
 uint32_t objdump::PrefixStrip;
-static uint64_t OutputAsmVariant;
-static bool HasOutputAsmVariantFlag;
 
 DebugFormat objdump::DbgVariables = DFDisabled;
 DebugFormat objdump::DbgInlinedFunctions = DFDisabled;

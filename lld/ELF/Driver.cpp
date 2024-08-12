@@ -2027,7 +2027,8 @@ static void setConfigs(Ctx &ctx, opt::InputArgList &args) {
   // builds and disabled otherwise. This check is enabled when writeAddends is
   // true.
 #ifndef NDEBUG
-  bool checkDynamicRelocsDefault = true;
+  // The SBF and BPF target for Solana do not support checking dynamic relocs.
+  bool checkDynamicRelocsDefault = m != EM_BPF && m != EM_SBF;
 #else
   bool checkDynamicRelocsDefault = false;
 #endif

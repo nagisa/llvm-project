@@ -22,10 +22,11 @@ namespace clang {
 namespace targets {
 
 class LLVM_LIBRARY_VISIBILITY BPFTargetInfo : public TargetInfo {
+  bool HasSolanaFeature = false;
   bool HasAlu32 = false;
 
 public:
-  BPFTargetInfo(const llvm::Triple &Triple, const TargetOptions &)
+  BPFTargetInfo(const llvm::Triple &Triple, const TargetOptions &Opts)
       : TargetInfo(Triple) {
     LongWidth = LongAlign = PointerWidth = PointerAlign = 64;
     SizeType = UnsignedLong;
@@ -110,6 +111,24 @@ public:
 
   std::pair<unsigned, unsigned> hardwareInterferenceSizes() const override {
     return std::make_pair(32, 32);
+  }
+
+  bool hasBitIntType() const override { return HasSolanaFeature; }
+
+  llvm::StringRef getAbi() {
+    if (Triple.getArch() == llvm::Triple::bpfeb) {
+      if (HasSolanaFeature) {
+        return "E-m:e-p:64:64-i64:64-n32:64-S128";
+      }
+
+      return "E-m:e-p:64:64-i64:64-i128:128-n32:64-S128";
+    }
+
+    if (HasSolanaFeature) {
+        return "e-m:e-p:64:64-i64:64-n32:64-S128";
+      }
+
+    return "e-m:e-p:64:64-i64:64-i128:128-n32:64-S128";
   }
 };
 } // namespace targets

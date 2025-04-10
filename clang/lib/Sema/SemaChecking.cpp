@@ -2087,6 +2087,7 @@ bool Sema::CheckTSBuiltinFunctionCall(const TargetInfo &TI, unsigned BuiltinID,
     return ARM().CheckAArch64BuiltinFunctionCall(TI, BuiltinID, TheCall);
   case llvm::Triple::bpfeb:
   case llvm::Triple::bpfel:
+  case llvm::Triple::sbf:
     return BPF().CheckBPFBuiltinFunctionCall(BuiltinID, TheCall);
   case llvm::Triple::dxil:
     return DirectX().CheckDirectXBuiltinFunctionCall(BuiltinID, TheCall);

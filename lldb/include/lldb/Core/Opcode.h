@@ -9,6 +9,7 @@
 #ifndef LLDB_CORE_OPCODE_H
 #define LLDB_CORE_OPCODE_H
 
+#include "lldb/Utility/ArchSpec.h"
 #include "lldb/Utility/Endian.h"
 #include "lldb/lldb-enumerations.h"
 
@@ -220,7 +221,7 @@ public:
     }
   }
 
-  int Dump(Stream *s, uint32_t min_byte_width) const;
+  int Dump(Stream *s, uint32_t min_byte_width, const ArchSpec &arch);
 
   const void *GetOpcodeBytes() const {
     return ((m_type == Opcode::eTypeBytes || m_type == Opcode::eType16_32Tuples)

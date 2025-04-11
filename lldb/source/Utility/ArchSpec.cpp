@@ -249,8 +249,10 @@ static constexpr const CoreDefinition g_core_definitions[] = {
     {eByteOrderLittle, 4, 1, 4, llvm::Triple::wasm32, ArchSpec::eCore_wasm32,
      "wasm32"},
     {eByteOrderLittle, 8, 8, 8, llvm::Triple::bpfel, ArchSpec::eCore_bpf, "bpf"},
-    {eByteOrderLittle, 8, 8, 8, llvm::Triple::sbf, ArchSpec::eCore_sbf, "sbf"},
+    {eByteOrderLittle, 8, 8, 8, llvm::Triple::sbf, ArchSpec::eCore_sbfv0, "sbf"},
+    {eByteOrderLittle, 8, 8, 8, llvm::Triple::sbf, ArchSpec::eCore_sbfv1, "sbfv1"},
     {eByteOrderLittle, 8, 8, 8, llvm::Triple::sbf, ArchSpec::eCore_sbfv2, "sbfv2"},
+    {eByteOrderLittle, 8, 8, 8, llvm::Triple::sbf, ArchSpec::eCore_sbfv3, "sbfv3"},
 };
 
 // Ensure that we have an entry in the g_core_definitions for each core. If you
@@ -415,8 +417,11 @@ static const ArchDefinitionEntry g_elf_arch_entries[] = {
     {ArchSpec::eCore_riscv64,         llvm::ELF::EM_RISCV,      ArchSpec::eRISCVSubType_riscv64}, // riscv64
     {ArchSpec::eCore_loongarch32,     llvm::ELF::EM_LOONGARCH,  ArchSpec::eLoongArchSubType_loongarch32}, // loongarch32
     {ArchSpec::eCore_loongarch64,     llvm::ELF::EM_LOONGARCH,  ArchSpec::eLoongArchSubType_loongarch64}, // loongarch64
-    {ArchSpec::eCore_sbf,             llvm::ELF::EM_SBF,        ArchSpec::eSBFSubType_sbf}, // sbf
+    {ArchSpec::eCore_bpf,             llvm::ELF::EM_BPF,        LLDB_INVALID_CPUTYPE}, // bpf
+    {ArchSpec::eCore_sbfv0,           llvm::ELF::EM_SBF,        ArchSpec::eSBFSubType_sbfv0}, // sbf
+    {ArchSpec::eCore_sbfv1,           llvm::ELF::EM_SBF,        ArchSpec::eSBFSubType_sbfv1}, // sbfv1
     {ArchSpec::eCore_sbfv2,           llvm::ELF::EM_SBF,        ArchSpec::eSBFSubType_sbfv2}, // sbfv2
+    {ArchSpec::eCore_sbfv3,           llvm::ELF::EM_SBF,        ArchSpec::eSBFSubType_sbfv3}, // sbfv3
 };
 // clang-format on
 

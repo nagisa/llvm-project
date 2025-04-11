@@ -142,7 +142,7 @@ PlatformLinux::PlatformLinux(bool is_host)
          llvm::Triple::hexagon, llvm::Triple::mips, llvm::Triple::mips64el,
          llvm::Triple::mipsel, llvm::Triple::msp430, llvm::Triple::systemz,
          llvm::Triple::loongarch64, llvm::Triple::ppc64le,
-         llvm::Triple::riscv64},
+         llvm::Triple::riscv64, llvm::Triple::sbf},
         llvm::Triple::Linux);
   }
 }

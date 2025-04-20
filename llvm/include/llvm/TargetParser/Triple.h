@@ -186,9 +186,11 @@ public:
     DXILSubArch_v1_8,
     DXILSubArch_v1_9,
     LatestDXILSubArch = DXILSubArch_v1_9,
+    SBFSubArch_v0,
     SBFSubArch_v1,
     SBFSubArch_v2,
     SBFSubArch_v3,
+    SBFSubArch_v4,
   };
   enum VendorType {
     UnknownVendor,

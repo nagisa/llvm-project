@@ -14,10 +14,10 @@
 #define LLVM_LIB_TARGET_SBF_SBFTARGETMACHINE_H
 
 #include "SBFSubtarget.h"
-#include "llvm/Target/TargetMachine.h"
+#include "llvm/CodeGen/CodeGenTargetMachineImpl.h"
 
 namespace llvm {
-class SBFTargetMachine : public LLVMTargetMachine {
+class SBFTargetMachine : public CodeGenTargetMachineImpl {
   std::unique_ptr<TargetLoweringObjectFile> TLOF;
   SBFSubtarget Subtarget;
 

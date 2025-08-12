@@ -14,14 +14,12 @@
 #include "SBF.h"
 #include "SBFInstrInfo.h"
 #include "SBFMCInstLower.h"
-#include "SBFTargetMachine.h"
 #include "BTFDebug.h"
 #include "MCTargetDesc/SBFInstPrinter.h"
 #include "MCTargetDesc/SBFMCTargetDesc.h"
 #include "TargetInfo/SBFTargetInfo.h"
 #include "llvm/CodeGen/AsmPrinter.h"
 #include "llvm/CodeGen/MachineConstantPool.h"
-#include "llvm/CodeGen/MachineFunctionPass.h"
 #include "llvm/CodeGen/MachineInstr.h"
 #include "llvm/CodeGen/MachineModuleInfo.h"
 #include "llvm/IR/Module.h"
@@ -70,7 +68,7 @@ bool SBFAsmPrinter::doInitialization(Module &M) {
   if (MAI->doesSupportDebugInformation() && !M.debug_compile_units().empty() &&
       SBFEnableBTFEmission) {
     BTF = new BTFX::BTFDebug(this);
-    DebugHandlers.push_back(std::unique_ptr<BTFX::BTFDebug>(BTF));
+    Handlers.push_back(std::unique_ptr<BTFX::BTFDebug>(BTF));
   }
 
   return false;

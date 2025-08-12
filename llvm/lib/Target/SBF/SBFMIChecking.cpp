@@ -15,10 +15,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "SBF.h"
-#include "SBFInstrInfo.h"
 #include "SBFTargetMachine.h"
-#include "llvm/CodeGen/MachineInstrBuilder.h"
-#include "llvm/CodeGen/MachineRegisterInfo.h"
 #include "llvm/Support/Debug.h"
 
 using namespace llvm;

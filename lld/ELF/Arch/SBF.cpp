@@ -25,7 +25,7 @@ namespace elf {
 namespace {
 class SBF final : public TargetInfo {
 public:
-  SBF();
+  SBF(Ctx & ctx);
   RelExpr getRelExpr(RelType type, const Symbol &s,
                      const uint8_t *loc) const override;
   RelType getDynRel(RelType type) const override;
@@ -54,7 +54,7 @@ RelExpr SBF::getRelExpr(RelType type, const Symbol &s,
     case R_SBF_64_64:
       return R_ABS;
     default:
-      error(getErrorLocation(loc) + "unrecognized reloc " + toString(type));
+      Err(ctx) << getErrorLoc(ctx, loc) << "unrecognized reloc " << type.v;
   }
   return R_NONE;
 }
@@ -113,12 +113,12 @@ void SBF::relocate(uint8_t *loc, const Relocation &rel, uint64_t val) const {
       break;
     }
     default:
-      error(getErrorLocation(loc) + "unrecognized reloc " + toString(rel.type));
+      Err(ctx) << getErrorLoc(ctx, loc) << "unrecognized reloc " << rel.type.v;
   }
 }
 
-static uint32_t getEFlags(InputFile *file) {
-  if (config->ekind == ELF64BEKind)
+static uint32_t getEFlags(InputFile *file, Ctx &ctx) {
+  if (ctx.arg.ekind == ELF64BEKind)
     return cast<ObjFile<ELF64BE>>(file)->getObj().getHeader().e_flags;
   return cast<ObjFile<ELF64LE>>(file)->getObj().getHeader().e_flags;
 }
@@ -129,7 +129,7 @@ uint32_t SBF::calcEFlags() const {
   // Ensure that all the object files were compiled with the same flags, as
   // different flags indicate different ABIs.
   for (InputFile *f : ctx.objectFiles) {
-    uint32_t flags = getEFlags(f);
+    uint32_t flags = getEFlags(f, ctx);
     if (ret == 0) {
       ret = flags;
     } else if (ret != flags) {

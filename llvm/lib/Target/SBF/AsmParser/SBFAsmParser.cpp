@@ -9,7 +9,6 @@
 #include "MCTargetDesc/SBFMCTargetDesc.h"
 #include "MCTargetDesc/SBFInstPrinter.h"
 #include "TargetInfo/SBFTargetInfo.h"
-#include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/StringSwitch.h"
 #include "llvm/MC/MCContext.h"
 #include "llvm/MC/MCExpr.h"
@@ -18,7 +17,6 @@
 #include "llvm/MC/MCParser/MCAsmLexer.h"
 #include "llvm/MC/MCParser/MCParsedAsmOperand.h"
 #include "llvm/MC/MCParser/MCTargetAsmParser.h"
-#include "llvm/MC/MCRegisterInfo.h"
 #include "llvm/MC/MCStreamer.h"
 #include "llvm/MC/MCSubtargetInfo.h"
 #include "llvm/MC/TargetRegistry.h"
@@ -33,7 +31,7 @@ class SBFAsmParser : public MCTargetAsmParser {
 
   SMLoc getLoc() const { return getParser().getTok().getLoc(); }
 
-  bool MatchAndEmitInstruction(SMLoc IDLoc, unsigned &Opcode,
+  bool matchAndEmitInstruction(SMLoc IDLoc, unsigned &Opcode,
                                OperandVector &Operands, MCStreamer &Out,
                                uint64_t &ErrorInfo,
                                bool MatchingInlineAsm) override;
@@ -43,7 +41,7 @@ class SBFAsmParser : public MCTargetAsmParser {
   ParseStatus tryParseRegister(MCRegister &Reg, SMLoc &StartLoc,
                                         SMLoc &EndLoc) override;
 
-  bool ParseInstruction(ParseInstructionInfo &Info, StringRef Name,
+  bool parseInstruction(ParseInstructionInfo &Info, StringRef Name,
                         SMLoc NameLoc, OperandVector &Operands) override;
 
 #define GET_ASSEMBLER_HEADER
@@ -80,7 +78,7 @@ struct SBFOperand : public MCParsedAsmOperand {
   } Kind;
 
   struct RegOp {
-    unsigned RegNum;
+    MCRegister RegNum;
   };
 
   struct ImmOp {
@@ -203,10 +201,10 @@ public:
     return Op;
   }
 
-  static std::unique_ptr<SBFOperand> createReg(unsigned RegNo, SMLoc S,
+  static std::unique_ptr<SBFOperand> createReg(MCRegister Reg, SMLoc S,
                                                SMLoc E) {
     auto Op = std::make_unique<SBFOperand>(Register);
-    Op->Reg.RegNum = RegNo;
+    Op->Reg.RegNum = Reg;
     Op->StartLoc = S;
     Op->EndLoc = E;
     return Op;
@@ -261,7 +259,7 @@ public:
 #define GET_MATCHER_IMPLEMENTATION
 #include "SBFGenAsmMatcher.inc"
 
-bool SBFAsmParser::MatchAndEmitInstruction(SMLoc IDLoc, unsigned &Opcode,
+bool SBFAsmParser::matchAndEmitInstruction(SMLoc IDLoc, unsigned &Opcode,
                                            OperandVector &Operands,
                                            MCStreamer &Out, uint64_t &ErrorInfo,
                                            bool MatchingInlineAsm) {
@@ -331,13 +329,13 @@ OperandMatchResultTy SBFAsmParser::parseRegister(OperandVector &Operands) {
     return MatchOperand_NoMatch;
   case AsmToken::Identifier:
     StringRef Name = getLexer().getTok().getIdentifier();
-    unsigned RegNo = MatchRegisterName(Name);
+    MCRegister Reg = MatchRegisterName(Name);
 
-    if (RegNo == 0)
+    if (!Reg)
       return MatchOperand_NoMatch;
 
     getLexer().Lex();
-    Operands.push_back(SBFOperand::createReg(RegNo, S, E));
+    Operands.push_back(SBFOperand::createReg(Reg, S, E));
   }
   return MatchOperand_Success;
 }
@@ -420,7 +418,7 @@ bool SBFAsmParser::parseOperand(OperandVector &Operands, StringRef Mnemonic) {
 }
 
 /// Parse an SBF instruction.
-bool SBFAsmParser::ParseInstruction(ParseInstructionInfo &Info, StringRef Name,
+bool SBFAsmParser::parseInstruction(ParseInstructionInfo &Info, StringRef Name,
                                     SMLoc NameLoc, OperandVector &Operands) {
   // First operand is token for instruction mnemonic.
   Operands.push_back(SBFOperand::createToken(Name, NameLoc));

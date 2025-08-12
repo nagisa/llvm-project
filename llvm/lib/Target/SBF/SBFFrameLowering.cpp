@@ -11,15 +11,13 @@
 //===----------------------------------------------------------------------===//
 
 #include "SBFFrameLowering.h"
-#include "SBFInstrInfo.h"
 #include "SBFSubtarget.h"
 #include "llvm/CodeGen/MachineFrameInfo.h"
 #include "llvm/CodeGen/MachineFunction.h"
-#include "llvm/CodeGen/MachineInstrBuilder.h"
 
 using namespace llvm;
 
-bool SBFFrameLowering::hasFP(const MachineFunction &MF) const { return true; }
+bool SBFFrameLowering::hasFPImpl(const MachineFunction &MF) const { return true; }
 
 void SBFFrameLowering::emitPrologue(MachineFunction &MF,
                                     MachineBasicBlock &MBB) const {
@@ -29,7 +27,8 @@ void SBFFrameLowering::emitPrologue(MachineFunction &MF,
   MachineBasicBlock::iterator MBBI = MBB.begin();
   MachineFrameInfo &MFI = MF.getFrameInfo();
   int NumBytes = (int)MFI.getStackSize();
-  if (NumBytes || MF.getSubtarget<SBFSubtarget>().getHasStaticSyscalls()) {
+  if ((NumBytes || MF.getSubtarget<SBFSubtarget>().getHasStaticSyscalls()) &&
+      MBBI != MBB.end()) {
     DebugLoc Dl = MBBI->getDebugLoc();
     const SBFInstrInfo &TII =
         *static_cast<const SBFInstrInfo *>(MF.getSubtarget().getInstrInfo());

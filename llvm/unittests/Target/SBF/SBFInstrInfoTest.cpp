@@ -62,7 +62,7 @@ protected:
         TM->getTargetTriple(), TM->getTargetCPU().str(),
         TM->getTargetFeatureString().str(), *TM);
 
-    MF = std::make_unique<MachineFunction>(*F, *TM, *ST, 42, *MMI);
+    MF = std::make_unique<MachineFunction>(*F, *TM, *ST, MMI->getContext(), 42);
   }
 };
 

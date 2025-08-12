@@ -12,15 +12,12 @@
 //===----------------------------------------------------------------------===//
 
 #include "SBF.h"
-#include "SBFRegisterInfo.h"
 #include "SBFSubtarget.h"
 #include "SBFTargetMachine.h"
 #include "llvm/CodeGen/FunctionLoweringInfo.h"
 #include "llvm/CodeGen/MachineConstantPool.h"
 #include "llvm/CodeGen/MachineFrameInfo.h"
 #include "llvm/CodeGen/MachineFunction.h"
-#include "llvm/CodeGen/MachineInstrBuilder.h"
-#include "llvm/CodeGen/MachineRegisterInfo.h"
 #include "llvm/CodeGen/SelectionDAGISel.h"
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/IntrinsicInst.h"
@@ -28,7 +25,6 @@
 #include "llvm/Support/Endian.h"
 #include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/raw_ostream.h"
-#include "llvm/Target/TargetMachine.h"
 
 using namespace llvm;
 
@@ -293,8 +289,7 @@ void SBFDAGToDAGISel::PreprocessLoad(SDNode *Node,
     SDNode *Op = OpV.getNode();
     if (Op->getOpcode() == ISD::TokenFactor) {
       for (SDNode::use_iterator UI = Node->use_begin(), UE = Node->use_end(); UI != UE; ++UI) {
-        SDUse &Use = UI.getUse();
-        SDNode *User = Use.getUser();
+        SDNode *User = UI->getUser();
         if (User->getOpcode() == ISD::TokenFactor) {
           SmallVector<SDValue, 8> ExtendedOps;
           bool NotExtended = true;

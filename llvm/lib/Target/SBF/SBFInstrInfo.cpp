@@ -73,7 +73,8 @@ void SBFInstrInfo::initializeTargetFeatures(bool HasExplicitSext, bool NewMemEnc
 void SBFInstrInfo::copyPhysReg(MachineBasicBlock &MBB,
                                MachineBasicBlock::iterator I,
                                const DebugLoc &DL, MCRegister DestReg,
-                               MCRegister SrcReg, bool KillSrc) const {
+                               MCRegister SrcReg, bool KillSrc,
+                               bool RenamableDest, bool RenamableSrc) const {
   if (SBF::GPRRegClass.contains(DestReg, SrcReg))
     BuildMI(MBB, I, DL, get(SBF::MOV_rr), DestReg)
         .addReg(SrcReg, getKillRegState(KillSrc));
@@ -93,7 +94,8 @@ void SBFInstrInfo::storeRegToStackSlot(MachineBasicBlock &MBB,
                                        Register SrcReg, bool IsKill, int FI,
                                        const TargetRegisterClass *RC,
                                        const TargetRegisterInfo *TRI,
-                                       Register VReg) const {
+                                       Register VReg,
+                                       MachineInstr::MIFlag Flags) const {
   DebugLoc DL;
   if (I != MBB.end())
     DL = I->getDebugLoc();
@@ -154,7 +156,8 @@ void SBFInstrInfo::loadRegFromStackSlot(MachineBasicBlock &MBB,
                                         Register DestReg, int FI,
                                         const TargetRegisterClass *RC,
                                         const TargetRegisterInfo *TRI,
-                                        Register VReg) const {
+                                        Register VReg,
+                                        MachineInstr::MIFlag Flags) const {
   DebugLoc DL;
   if (I != MBB.end())
     DL = I->getDebugLoc();

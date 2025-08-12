@@ -597,13 +597,15 @@ SDValue SBFTargetLowering::LowerCall(TargetLowering::CallLoweringInfo &CLI,
                          InVals);
 }
 
-bool SBFTargetLowering::shouldSignExtendTypeInLibCall(EVT Type, bool IsSigned) const {
-  return IsSigned || Type == MVT::i32;
+bool SBFTargetLowering::shouldSignExtendTypeInLibCall(Type* Ty,
+                                                      bool IsSigned) const {
+  return IsSigned || Ty->isIntegerTy(32);
 }
 
 bool SBFTargetLowering::CanLowerReturn(
     CallingConv::ID CallConv, MachineFunction &MF, bool IsVarArg,
-    const SmallVectorImpl<ISD::OutputArg> &Outs, LLVMContext &Context) const {
+    const SmallVectorImpl<ISD::OutputArg> &Outs, LLVMContext &Context,
+    const Type *RetTy) const {
   // At minimal return Outs.size() <= 1, or check valid types in CC.
   SmallVector<CCValAssign, 16> RVLocs;
   CCState CCInfo(CallConv, IsVarArg, MF, RVLocs, Context);
@@ -751,10 +753,9 @@ SDValue SBFTargetLowering::LowerSELECT_CC(SDValue Op, SelectionDAG &DAG) const {
     NegateCC(LHS, RHS, CC);
 
   SDValue TargetCC = DAG.getConstant(CC, DL, LHS.getValueType());
-  SDVTList VTs = DAG.getVTList(Op.getValueType(), MVT::Glue);
   SDValue Ops[] = {LHS, RHS, TargetCC, TrueV, FalseV};
 
-  return DAG.getNode(SBFISD::SELECT_CC, DL, VTs, Ops);
+  return DAG.getNode(SBFISD::SELECT_CC, DL, Op.getValueType(), Ops);
 }
 
 SDValue SBFTargetLowering::LowerATOMICRMW(SDValue Op, SelectionDAG &DAG) const {

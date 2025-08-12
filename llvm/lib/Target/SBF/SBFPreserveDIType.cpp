@@ -19,10 +19,8 @@
 #include "llvm/IR/Module.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/IR/Type.h"
-#include "llvm/IR/User.h"
 #include "llvm/IR/Value.h"
 #include "llvm/Pass.h"
-#include "llvm/Transforms/Utils/BasicBlockUtils.h"
 
 #define DEBUG_TYPE "sbf-preserve-di-type"
 
@@ -114,7 +112,7 @@ static bool SBFPreserveDITypeImpl(Function &F) {
 
     // Load the global variable which represents the type info.
     auto *LDInst =
-        new LoadInst(Type::getInt64Ty(BB->getContext()), GV, "", Call);
+        new LoadInst(Type::getInt64Ty(BB->getContext()), GV, "", Call->getIterator());
     Instruction *PassThroughInst =
         SBFCoreSharedInfo::insertPassThrough(M, BB, LDInst, Call);
     Call->replaceAllUsesWith(PassThroughInst);

@@ -41,7 +41,7 @@ def SBFcallseq_end  : SDNode<"ISD::CALLSEQ_END",   SDT_SBFCallSeqEnd,
 def SBFbrcc         : SDNode<"SBFISD::BR_CC", SDT_SBFBrCC,
                              [SDNPHasChain, SDNPOutGlue, SDNPInGlue]>;
 
-def SBFselectcc     : SDNode<"SBFISD::SELECT_CC", SDT_SBFSelectCC, [SDNPInGlue]>;
+def SBFselectcc     : SDNode<"SBFISD::SELECT_CC", SDT_SBFSelectCC>;
 def SBFWrapper      : SDNode<"SBFISD::Wrapper", SDT_SBFWrapper>;
 def SBFHasALU32 : Predicate<"Subtarget->getHasAlu32()">;
 def SBFNoALU32 : Predicate<"!Subtarget->getHasAlu32()">;

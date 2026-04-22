@@ -37,18 +37,19 @@ public:
       : BaseT(TM, F.getParent()->getDataLayout()), ST(TM->getSubtargetImpl(F)),
         TLI(ST->getTargetLowering()) {}
 
-  int getIntImmCost(const APInt &Imm, Type *Ty, TTI::TargetCostKind CostKind) {
+  InstructionCost getIntImmCost(const APInt &Imm, Type *Ty,
+                    TTI::TargetCostKind CostKind) const override {
     if (Imm.getBitWidth() <= 64 && isInt<32>(Imm.getSExtValue()))
       return TTI::TCC_Free;
 
     return TTI::TCC_Basic;
   }
 
-  bool shouldBuildLookupTables() const {
+  bool shouldBuildLookupTables() const override {
     return true;
   }
 
-  bool shouldBuildRelLookupTables() const {
+  bool shouldBuildRelLookupTables() const override {
     // Relational lookup tables are not working for SBF, since the offset
     // calculation is not implemented.
     return false;
@@ -59,7 +60,7 @@ public:
       TTI::TargetCostKind CostKind,
       TTI::OperandValueInfo Op1Info = {TTI::OK_AnyValue, TTI::OP_None},
       TTI::OperandValueInfo Op2Info = {TTI::OK_AnyValue, TTI::OP_None},
-      const llvm::Instruction *I = nullptr) {
+      const llvm::Instruction *I = nullptr) const override{
     if (Opcode == Instruction::Select)
       return SCEVCheapExpansionBudget.getValue();
 
@@ -71,7 +72,8 @@ public:
       unsigned Opcode, Type *Ty, TTI::TargetCostKind CostKind,
       TTI::OperandValueInfo Op1Info = {TTI::OK_AnyValue, TTI::OP_None},
       TTI::OperandValueInfo Op2Info = {TTI::OK_AnyValue, TTI::OP_None},
-    ArrayRef<const Value *> Args = {}, const Instruction *CxtI = nullptr) {
+    ArrayRef<const Value *> Args = {},
+    const Instruction *CxtI = nullptr) const override {
     int ISDOpcode = TLI->InstructionOpcodeToISD(Opcode);
     
     if ((ISDOpcode == ISD::ADD && CostKind == TTI::TCK_RecipThroughput) ||
@@ -82,8 +84,8 @@ public:
                                          Op2Info);
   }
 
-  TTI::MemCmpExpansionOptions enableMemCmpExpansion(bool OptSize,
-                                                    bool IsZeroCmp) const {
+  TTI::MemCmpExpansionOptions
+  enableMemCmpExpansion(bool OptSize, bool IsZeroCmp) const override{
     TTI::MemCmpExpansionOptions Options;
     Options.LoadSizes = {8, 4, 2, 1};
     Options.MaxNumLoads = TLI->getMaxExpandSizeMemcmp(OptSize);

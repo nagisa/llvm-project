@@ -14,7 +14,8 @@
 #include "llvm/MC/MCExpr.h"
 #include "llvm/MC/MCInst.h"
 #include "llvm/MC/MCInstrInfo.h"
-#include "llvm/MC/MCParser/MCAsmLexer.h"
+#include "llvm/MC/MCParser/AsmLexer.h"
+#include "llvm/MC/MCAsmInfo.h"
 #include "llvm/MC/MCParser/MCParsedAsmOperand.h"
 #include "llvm/MC/MCParser/MCTargetAsmParser.h"
 #include "llvm/MC/MCStreamer.h"
@@ -48,9 +49,9 @@ class SBFAsmParser : public MCTargetAsmParser {
 #include "SBFGenAsmMatcher.inc"
 
   bool parseOperand(OperandVector &Operands, StringRef Mnemonic);
-  OperandMatchResultTy parseImmediate(OperandVector &Operands);
-  OperandMatchResultTy parseRegister(OperandVector &Operands);
-  OperandMatchResultTy parseMemOperand(OperandVector &Operands);
+  ParseStatus parseImmediate(OperandVector &Operands);
+  ParseStatus parseRegister(OperandVector &Operands);
+  ParseStatus parseMemOperand(OperandVector &Operands);
 
 public:
   enum SBFMatchResultTy {
@@ -151,7 +152,7 @@ public:
     return Tok;
   }
 
-  void print(raw_ostream &OS) const override {
+  void print(raw_ostream &OS, const MCAsmInfo &MAI) const override {
     auto RegName = [](unsigned Reg) {
       if (Reg)
         return SBFInstPrinter::getRegisterName(Reg);
@@ -161,7 +162,7 @@ public:
 
     switch (Kind) {
     case Immediate:
-      OS << *getImm();
+      MAI.printExpr(OS, *getImm());
       break;
     case Register:
       OS << "<register ";
@@ -320,30 +321,30 @@ ParseStatus SBFAsmParser::tryParseRegister(MCRegister &Reg,
   return ParseStatus::NoMatch;
 }
 
-OperandMatchResultTy SBFAsmParser::parseRegister(OperandVector &Operands) {
+ParseStatus SBFAsmParser::parseRegister(OperandVector &Operands) {
   SMLoc S = getLoc();
   SMLoc E = SMLoc::getFromPointer(S.getPointer() - 1);
 
   switch (getLexer().getKind()) {
   default:
-    return MatchOperand_NoMatch;
+    return ParseStatus::NoMatch;
   case AsmToken::Identifier:
     StringRef Name = getLexer().getTok().getIdentifier();
     MCRegister Reg = MatchRegisterName(Name);
 
     if (!Reg)
-      return MatchOperand_NoMatch;
+      return ParseStatus::NoMatch;
 
     getLexer().Lex();
     Operands.push_back(SBFOperand::createReg(Reg, S, E));
   }
-  return MatchOperand_Success;
+  return ParseStatus::Success;
 }
 
-OperandMatchResultTy SBFAsmParser::parseImmediate(OperandVector &Operands) {
+ParseStatus SBFAsmParser::parseImmediate(OperandVector &Operands) {
   switch (getLexer().getKind()) {
   default:
-    return MatchOperand_NoMatch;
+    return ParseStatus::NoMatch;
   case AsmToken::LParen:
   case AsmToken::Minus:
   case AsmToken::Plus:
@@ -357,41 +358,41 @@ OperandMatchResultTy SBFAsmParser::parseImmediate(OperandVector &Operands) {
   SMLoc S = getLoc();
 
   if (getParser().parseExpression(IdVal))
-    return MatchOperand_ParseFail;
+    return ParseStatus::Failure;
 
   SMLoc E = SMLoc::getFromPointer(S.getPointer() - 1);
   Operands.push_back(SBFOperand::createImm(IdVal, S, E));
 
-  return MatchOperand_Success;
+  return ParseStatus::Success;
 }
 
-OperandMatchResultTy SBFAsmParser::parseMemOperand(OperandVector &Operands) {
+ParseStatus SBFAsmParser::parseMemOperand(OperandVector &Operands) {
   if (getLexer().isNot(AsmToken::LBrac)) {
-    return MatchOperand_ParseFail;
+    return ParseStatus::Failure;
   }
 
   getParser().Lex(); // Eat '['.
   Operands.push_back(SBFOperand::createToken("[", getLoc()));
 
-  if (parseRegister(Operands) != MatchOperand_Success) {
+  if (!parseRegister(Operands).isSuccess()) {
     Error(getLoc(), "expected register");
-    return MatchOperand_ParseFail;
+    return ParseStatus::Failure;
   }
 
-  if (parseImmediate(Operands) != MatchOperand_Success) {
+  if (!parseImmediate(Operands).isSuccess()) {
     Error(getLoc(), "expected immediate offset");
-    return MatchOperand_ParseFail;
+    return ParseStatus::Failure;
   }
 
   if (getLexer().isNot(AsmToken::RBrac)) {
     Error(getLoc(), "expected ']'");
-    return MatchOperand_ParseFail;
+    return ParseStatus::Failure;
   }
 
   getParser().Lex(); // Eat ']'.
   Operands.push_back(SBFOperand::createToken("]", getLoc()));
 
-  return MatchOperand_Success;
+  return ParseStatus::Success;
 }
 
 /// Looks at a token type and creates the relevant operand from this
@@ -399,16 +400,16 @@ OperandMatchResultTy SBFAsmParser::parseMemOperand(OperandVector &Operands) {
 /// true.
 bool SBFAsmParser::parseOperand(OperandVector &Operands, StringRef Mnemonic) {
   // Attempt to parse token as a register.
-  if (parseRegister(Operands) == MatchOperand_Success)
+  if (parseRegister(Operands).isSuccess())
     return false;
 
   // Attempt to parse token as an immediate.
-  if (parseImmediate(Operands) == MatchOperand_Success) {
+  if (parseImmediate(Operands).isSuccess()) {
     return false;
   }
 
   // Attempt to parse token sequence as a memory operand ("[reg+/-offset]").
-  if (parseMemOperand(Operands) == MatchOperand_Success) {
+  if (parseMemOperand(Operands).isSuccess()) {
     return false;
   }
 

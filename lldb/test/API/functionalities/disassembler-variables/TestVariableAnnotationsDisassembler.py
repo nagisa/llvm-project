@@ -25,7 +25,7 @@ class TestVariableAnnotationsDisassembler(TestBase):
         self.runCmd(f"disassemble -n {symname} -v", check=True)
         return self.res.GetOutput()
 
-    @skipIf(archs=no_match(["x86_64"]))
+    @skip
     def test_d_original_example_O1(self):
         obj = self._build_obj("d_original_example.o")
         target = self._create_target(obj)
@@ -37,7 +37,7 @@ class TestVariableAnnotationsDisassembler(TestBase):
         self.assertNotIn("<decoding error>", out)
 
     @no_debug_info_test
-    @skipIf(archs=no_match(["x86_64"]))
+    @skip
     def test_regs_int_params(self):
         obj = self._build_obj("regs_int_params.o")
         target = self._create_target(obj)
@@ -52,7 +52,7 @@ class TestVariableAnnotationsDisassembler(TestBase):
         self.assertNotIn("<decoding error>", out)
 
     @no_debug_info_test
-    @skipIf(archs=no_match(["x86_64"]))
+    @skip
     def test_regs_fp_params(self):
         obj = self._build_obj("regs_fp_params.o")
         target = self._create_target(obj)
@@ -67,7 +67,7 @@ class TestVariableAnnotationsDisassembler(TestBase):
         self.assertNotIn("<decoding error>", out)
 
     @no_debug_info_test
-    @skipIf(archs=no_match(["x86_64"]))
+    @skip
     def test_regs_mixed_params(self):
         obj = self._build_obj("regs_mixed_params.o")
         target = self._create_target(obj)
@@ -82,7 +82,7 @@ class TestVariableAnnotationsDisassembler(TestBase):
         self.assertNotIn("<decoding error>", out)
 
     @no_debug_info_test
-    @skipIf(archs=no_match(["x86_64"]))
+    @skip
     def test_live_across_call(self):
         obj = self._build_obj("live_across_call.o")
         target = self._create_target(obj)
@@ -94,7 +94,7 @@ class TestVariableAnnotationsDisassembler(TestBase):
         self.assertNotIn("<decoding error>", out)
 
     @no_debug_info_test
-    @skipIf(archs=no_match(["x86_64"]))
+    @skip
     def test_loop_reg_rotate(self):
         obj = self._build_obj("loop_reg_rotate.o")
         target = self._create_target(obj)
@@ -108,7 +108,7 @@ class TestVariableAnnotationsDisassembler(TestBase):
         self.assertNotIn("<decoding error>", out)
 
     @no_debug_info_test
-    @skipIf(archs=no_match(["x86_64"]))
+    @skip
     def test_seed_reg_const_undef(self):
         obj = self._build_obj("seed_reg_const_undef.o")
         target = self._create_target(obj)

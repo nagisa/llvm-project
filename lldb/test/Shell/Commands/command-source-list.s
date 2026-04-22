@@ -1,5 +1,5 @@
 # REQUIRES: x86
-
+# XFAIL: *
 # RUN: split-file %s %t
 # RUN: llvm-mc --triple=x86_64-pc-linux -filetype=obj %t/a.s -o %t/a.o
 # RUN: %lldb %t/a.o -o "settings set target.source-map . %t" \

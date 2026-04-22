@@ -893,11 +893,6 @@ static void initializeLibCalls(TargetLibraryInfoImpl &TLI, const Triple &T,
     TLI.setUnavailable(LibFunc_memrchr);
 
   TLI.addVectorizableFunctionsFromVecLib(VecLib, T);
-  if (T.isBPF() || T.isSBF()) {
-    TLI.setUnavailable(LibFunc_rust_alloc);
-    TLI.setUnavailable(LibFunc_rust_dealloc);
-    TLI.setUnavailable(LibFunc_rust_realloc);
-  }
 }
 
 /// Initialize the set of available library functions based on the specified

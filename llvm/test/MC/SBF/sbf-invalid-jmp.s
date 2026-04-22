@@ -5,6 +5,6 @@
 # The original BPF does not support 16-bit relocations, so we currently
 # don't either. But we will now emit an error message for SBF instead of
 # asserting as the BPF back-end does.
-# CHECK: <unknown>:0: error: 2-byte relocations not supported
+# CHECK: error: 2-byte relocations not supported
 ja undefined_label
 

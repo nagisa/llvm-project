@@ -39,6 +39,17 @@ public:
     MaxAtomicPromoteWidth = 64;
     MaxAtomicInlineWidth = 64;
     TLSSupported = false;
+    if (Triple.getArch() == llvm::Triple::sbf) {
+      Int128Align = 64;
+      HasSolanaFeature = true;
+    } else {
+      for (auto& it : Opts.FeaturesAsWritten) {
+        if (it == "+solana") {
+          HasSolanaFeature = true;
+          break;
+        }
+      }
+    }
   }
 
   void getTargetDefines(const LangOptions &Opts,
@@ -116,14 +127,6 @@ public:
   bool hasBitIntType() const override { return HasSolanaFeature; }
 
   llvm::StringRef getAbi() {
-    if (Triple.getArch() == llvm::Triple::bpfeb) {
-      if (HasSolanaFeature) {
-        return "E-m:e-p:64:64-i64:64-n32:64-S128";
-      }
-
-      return "E-m:e-p:64:64-i64:64-i128:128-n32:64-S128";
-    }
-
     if (HasSolanaFeature) {
         return "e-m:e-p:64:64-i64:64-n32:64-S128";
       }

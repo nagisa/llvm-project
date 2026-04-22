@@ -20,30 +20,30 @@
 #include "SBFGenInstrInfo.inc"
 
 namespace llvm {
+class SBFSubtarget;
 
 class SBFInstrInfo : public SBFGenInstrInfo {
   const SBFRegisterInfo RI;
 
 public:
-  SBFInstrInfo();
+  SBFInstrInfo(const SBFSubtarget &STI);
 
   const SBFRegisterInfo &getRegisterInfo() const { return RI; }
 
   void copyPhysReg(MachineBasicBlock &MBB, MachineBasicBlock::iterator I,
-                   const DebugLoc &DL, MCRegister DestReg, MCRegister SrcReg,
+                   const DebugLoc &DL, Register DestReg, Register SrcReg,
                    bool KillSrc, bool RenamableDest = false,
                    bool RenamableSrc = false) const override;
 
   void storeRegToStackSlot(
       MachineBasicBlock &MBB, MachineBasicBlock::iterator MBBI, Register SrcReg,
-      bool isKill, int FrameIndex, const TargetRegisterClass *RC,
-      const TargetRegisterInfo *TRI, Register VReg,
+      bool isKill, int FrameIndex, const TargetRegisterClass *RC, Register VReg,
       MachineInstr::MIFlag Flags = MachineInstr::NoFlags) const override;
 
   void loadRegFromStackSlot(
       MachineBasicBlock &MBB, MachineBasicBlock::iterator MBBI,
       Register DestReg, int FrameIndex, const TargetRegisterClass *RC,
-      const TargetRegisterInfo *TRI, Register VReg,
+      Register VReg, unsigned SubReg = 0,
       MachineInstr::MIFlag Flags = MachineInstr::NoFlags) const override;
 
   bool analyzeBranch(MachineBasicBlock &MBB, MachineBasicBlock *&TBB,
@@ -73,13 +73,13 @@ public:
                               int &FrameIndex) const override;
 
   Register isStoreToStackSlot(const MachineInstr &MI, int &FrameIndex,
-                              unsigned &MemBytes) const override;
+                              TypeSize &MemBytes) const override;
 
   Register isLoadFromStackSlot(const MachineInstr &MI,
                                int &FrameIndex) const override;
 
   Register isLoadFromStackSlot(const MachineInstr &MI, int &FrameIndex,
-                               unsigned &MemBytes) const override;
+                               TypeSize &MemBytes) const override;
 
 private:
   bool HasExplicitSignExt;

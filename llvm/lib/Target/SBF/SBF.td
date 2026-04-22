@@ -13,6 +13,8 @@ include "SBFCallingConv.td"
 include "SBFInstrInfo.td"
 include "GISel/SBFRegisterBanks.td"
 
+defm : RemapAllTargetPseudoPointerOperands<GPR>;
+
 def SBFInstrInfo : InstrInfo;
 //===----------------------------------------------------------------------===//
 // Assembly printer

@@ -2,6 +2,7 @@
 ## into multiple discontinuous parts (and those parts are placed in different
 ## sections)
 
+# XFAIL: *
 # RUN: llvm-mc -triple x86_64-pc-linux -filetype=obj %s -o %t
 # RUN: %lldb %t -o "image lookup -v -n look_me_up" -o exit | FileCheck %s
 

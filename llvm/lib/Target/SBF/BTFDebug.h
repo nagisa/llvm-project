@@ -432,7 +432,7 @@ public:
   void endModule() override;
 };
 
-} // end namespace BTFX 
+} // end namespace BTFX
 } // end namespace llvm
 
 #endif

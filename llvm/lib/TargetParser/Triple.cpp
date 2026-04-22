@@ -2380,7 +2380,7 @@ ExceptionHandling Triple::getDefaultExceptionHandling() const {
   }
 
   if (isAArch64() || isX86() || isPPC() || isMIPS() || isSPARC() || isBPF() ||
-      isRISCV() || isLoongArch())
+      isRISCV() || isLoongArch() || isSBF())
     return ExceptionHandling::DwarfCFI;
 
   switch (getArch()) {

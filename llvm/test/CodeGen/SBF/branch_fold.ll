@@ -41,9 +41,9 @@ bb8:                                              ; preds = %bb2.backedge, %bb1,
   ret void
 
 ; CHECK: LBB0_4:
-; CHECK-NOT: jeq r4, 0, LBB0_7
+; CHECK-NOT: jeq r4, 0, .LBB0_7
 ; CHECK-NOT: ja LBB0_3
-; CHECK: jne r4, 0, LBB0_4
+; CHECK: jne r4, 0, .LBB0_4
 
 bb3:                                              ; preds = %bb1, %bb2.backedge
   %to_process.sroa.0.09 = phi i64 [ %to_process.sroa.0.0, %bb2.backedge ], [ %to_process.sroa.0.05, %bb1 ]

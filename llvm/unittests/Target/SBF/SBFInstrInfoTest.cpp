@@ -43,7 +43,7 @@ protected:
 
   SBFInstrInfoTest() {
     std::string Error;
-    auto TT(Triple::normalize(GetParam()));
+    Triple TT(GetParam());
     const Target *TheTarget = TargetRegistry::lookupTarget(TT, Error);
     TargetOptions Options;
 
@@ -135,11 +135,11 @@ TEST_P(SBFInstrInfoTest, IsStoreToStackSlot) {
                          .addImm(0)
                          .getInstr();
   int FI = 0;
-  unsigned Mem = 0;
+  TypeSize Mem = TypeSize::getFixed(0);
   auto MI1Res = TII->isStoreToStackSlot(*MI, FI, Mem);
   EXPECT_EQ(MI1Res.id(), SBF::R1);
   EXPECT_EQ(FI, 10);
-  EXPECT_EQ(Mem, 8u);
+  EXPECT_EQ(Mem.getFixedValue(), 8u);
 
   MI = BuildMI(*MF, DL, TII->get(SBF::STD_V1))
            .addReg(SBF::R2, getKillRegState(true))
@@ -147,11 +147,11 @@ TEST_P(SBFInstrInfoTest, IsStoreToStackSlot) {
            .addImm(0)
            .getInstr();
   FI = 0;
-  Mem = 0;
+  Mem = TypeSize::getFixed(0);
   MI1Res = TII->isStoreToStackSlot(*MI, FI, Mem);
   EXPECT_EQ(MI1Res.id(), SBF::R2);
   EXPECT_EQ(FI, 17);
-  EXPECT_EQ(Mem, 8u);
+  EXPECT_EQ(Mem.getFixedValue(), 8u);
 
   MI = BuildMI(*MF, DL, TII->get(SBF::STW32_V2))
            .addReg(SBF::R2, getKillRegState(true))
@@ -159,11 +159,11 @@ TEST_P(SBFInstrInfoTest, IsStoreToStackSlot) {
            .addImm(0)
            .getInstr();
   FI = 0;
-  Mem = 0;
+  Mem = TypeSize::getFixed(0);
   MI1Res = TII->isStoreToStackSlot(*MI, FI, Mem);
   EXPECT_EQ(MI1Res.id(), SBF::R2);
   EXPECT_EQ(FI, 15);
-  EXPECT_EQ(Mem, 4u);
+  EXPECT_EQ(Mem.getFixedValue(), 4u);
 
   MI = BuildMI(*MF, DL, TII->get(SBF::STW32_V1))
            .addReg(SBF::R5, getKillRegState(true))
@@ -171,11 +171,11 @@ TEST_P(SBFInstrInfoTest, IsStoreToStackSlot) {
            .addImm(0)
            .getInstr();
   FI = 0;
-  Mem = 0;
+  Mem = TypeSize::getFixed(0);
   MI1Res = TII->isStoreToStackSlot(*MI, FI, Mem);
   EXPECT_EQ(MI1Res.id(), SBF::R5);
   EXPECT_EQ(FI, 18);
-  EXPECT_EQ(Mem, 4u);
+  EXPECT_EQ(Mem.getFixedValue(), 4u);
 
   MI = BuildMI(*MF, DL, TII->get(SBF::LDW32_V1), SBF::R1)
            .addReg(SBF::R5, getKillRegState(true))
@@ -183,7 +183,7 @@ TEST_P(SBFInstrInfoTest, IsStoreToStackSlot) {
            .addImm(0)
            .getInstr();
   FI = 0;
-  Mem = 0;
+  Mem = TypeSize::getFixed(0);
   MI1Res = TII->isStoreToStackSlot(*MI, FI, Mem);
   EXPECT_EQ(MI1Res.id(), 0u);
 }
@@ -197,33 +197,33 @@ TEST_P(SBFInstrInfoTest, IsLoadFromStackSlot) {
                          .addImm(0)
                          .getInstr();
   int FI = 0;
-  unsigned Mem = 0;
+  TypeSize Mem = TypeSize::getFixed(0);
   auto MI1Res = TII->isLoadFromStackSlot(*MI, FI, Mem);
   EXPECT_EQ(MI1Res.id(), SBF::R1);
   EXPECT_EQ(FI, 10);
-  EXPECT_EQ(Mem, 8u);
+  EXPECT_EQ(Mem.getFixedValue(), 8u);
 
   MI = BuildMI(*MF, DL, TII->get(SBF::LDD_V1), SBF::R2)
            .addFrameIndex(17)
            .addImm(0)
            .getInstr();
   FI = 0;
-  Mem = 0;
+  Mem = TypeSize::getFixed(0);
   MI1Res = TII->isLoadFromStackSlot(*MI, FI, Mem);
   EXPECT_EQ(MI1Res.id(), SBF::R2);
   EXPECT_EQ(FI, 17);
-  EXPECT_EQ(Mem, 8u);
+  EXPECT_EQ(Mem.getFixedValue(), 8u);
 
   MI = BuildMI(*MF, DL, TII->get(SBF::LDW32_V2), SBF::R2)
            .addFrameIndex(15)
            .addImm(0)
            .getInstr();
   FI = 0;
-  Mem = 0;
+  Mem = TypeSize::getFixed(0);
   MI1Res = TII->isLoadFromStackSlot(*MI, FI, Mem);
   EXPECT_EQ(MI1Res.id(), SBF::R2);
   EXPECT_EQ(FI, 15);
-  EXPECT_EQ(Mem, 4u);
+  EXPECT_EQ(Mem.getFixedValue(), 4u);
 
   MI = BuildMI(*MF, DL, TII->get(SBF::LDW32_V1))
            .addReg(SBF::R5, getKillRegState(true))
@@ -231,11 +231,11 @@ TEST_P(SBFInstrInfoTest, IsLoadFromStackSlot) {
            .addImm(0)
            .getInstr();
   FI = 0;
-  Mem = 0;
+  Mem = TypeSize::getFixed(0);
   MI1Res = TII->isLoadFromStackSlot(*MI, FI, Mem);
   EXPECT_EQ(MI1Res.id(), SBF::R5);
   EXPECT_EQ(FI, 18);
-  EXPECT_EQ(Mem, 4u);
+  EXPECT_EQ(Mem.getFixedValue(), 4u);
 
   MI = BuildMI(*MF, DL, TII->get(SBF::STD_V2))
            .addReg(SBF::R5, getKillRegState(true))
@@ -243,7 +243,7 @@ TEST_P(SBFInstrInfoTest, IsLoadFromStackSlot) {
            .addImm(0)
            .getInstr();
   FI = 0;
-  Mem = 0;
+  Mem = TypeSize::getFixed(0);
   MI1Res = TII->isLoadFromStackSlot(*MI, FI, Mem);
   EXPECT_EQ(MI1Res.id(), 0u);
 }

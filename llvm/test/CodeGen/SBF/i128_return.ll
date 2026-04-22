@@ -32,10 +32,10 @@ define i128 @foo(i64 %a, i64 %b) {
 ; CHECK-NEXT:    mov64 r0, r1
 ; CHECK-NEXT:    add64 r0, r2
 ; CHECK-NEXT:    mov64 r3, 1
-; CHECK-NEXT:    jlt r0, r1, LBB1_2
+; CHECK-NEXT:    jlt r0, r1, .LBB1_2
 ; CHECK-NEXT:  # %bb.1: # %entry
 ; CHECK-NEXT:    mov64 r3, 0
-; CHECK-NEXT:  LBB1_2: # %entry
+; CHECK-NEXT:  .LBB1_2: # %entry
 ; CHECK-NEXT:    arsh64 r2, 63
 ; CHECK-NEXT:    arsh64 r1, 63
 ; CHECK-NEXT:    add64 r1, r2
@@ -47,10 +47,10 @@ define i128 @foo(i64 %a, i64 %b) {
 ; CHECK-ALU32-NEXT:    mov64 r0, r1
 ; CHECK-ALU32-NEXT:    add64 r0, r2
 ; CHECK-ALU32-NEXT:    mov32 w3, 1
-; CHECK-ALU32-NEXT:    jlt r0, r1, LBB1_2
+; CHECK-ALU32-NEXT:    jlt r0, r1, .LBB1_2
 ; CHECK-ALU32-NEXT:  # %bb.1: # %entry
 ; CHECK-ALU32-NEXT:    mov32 w3, 0
-; CHECK-ALU32-NEXT:  LBB1_2: # %entry
+; CHECK-ALU32-NEXT:  .LBB1_2: # %entry
 ; CHECK-ALU32-NEXT:    arsh64 r2, 63
 ; CHECK-ALU32-NEXT:    arsh64 r1, 63
 ; CHECK-ALU32-NEXT:    add64 r1, r2

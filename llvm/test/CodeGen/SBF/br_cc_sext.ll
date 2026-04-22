@@ -18,7 +18,7 @@ entry:
 ; Sign extension before comparison with immediate value
 ; CHECK-LABEL: test_one
 ; CHECK: mov32 r1, w1
-; CHECK: jeq r1, -1, LBB1_2
+; CHECK: jeq r1, -1, .LBB1_2
   %ld = load i32, ptr %c, align 4
   %cmp = icmp ult i32 %ld, -1
   br i1 %cmp, label %if.then, label %if.else
@@ -44,7 +44,7 @@ entry:
 ; Sign extension before comparison with immediate value
 ; CHECK-LABEL: test_two
 ; CHECK: mov32 r1, w1
-; CHECK: jsgt r1, -2, LBB2_2
+; CHECK: jsgt r1, -2, .LBB2_2
   %ld = load i32, ptr %c, align 4
   %cmp = icmp slt i32 %ld, -1
   br i1 %cmp, label %if.then, label %if.else
@@ -72,7 +72,7 @@ entry:
 ; CHECK: mov32 r1, w2
 ; CHECK: ldxw w3, [r3 + 0]
 ; CHECK: mov32 r3, w3
-; CHECK: jsge r3, r1, LBB3_2
+; CHECK: jsge r3, r1, .LBB3_2
   %ld = load i32, ptr %c, align 4
   %cmp = icmp slt i32 %ld, %b
   br i1 %cmp, label %if.then, label %if.else
@@ -99,7 +99,7 @@ entry:
 ; CHECK-LABEL: test_four
 ; CHECK: mov64 w0, w1
 ; CHECK: ldxw w1, [r3 + 0]
-; CHECK: jge r1, r2, LBB4_2
+; CHECK: jge r1, r2, .LBB4_2
   %ld = load i32, ptr %c, align 4
   %cmp = icmp ult i32 %ld, %b
   br i1 %cmp, label %if.then, label %if.else

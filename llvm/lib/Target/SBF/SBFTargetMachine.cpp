@@ -119,7 +119,7 @@ void SBFTargetMachine::registerPassBuilderCallbacks(PassBuilder &PB) {
       });
   PB.registerPeepholeEPCallback([=](FunctionPassManager &FPM,
                                     OptimizationLevel Level) {
-    FPM.addPass(ExpandMemCmpPass(this));
+    FPM.addPass(ExpandMemCmpPass(*this));
     FPM.addPass(InstCombinePass());
     FPM.addPass(SimplifyCFGPass(
         SimplifyCFGOptions().hoistCommonInsts(true).convertSwitchToLookupTable(
@@ -134,7 +134,7 @@ void SBFPassConfig::addIRPasses() {
 
 TargetTransformInfo
 SBFTargetMachine::getTargetTransformInfo(const Function &F) const {
-  return TargetTransformInfo(SBFTTIImpl(this, F));
+  return TargetTransformInfo(std::make_unique<SBFTTIImpl>(this, F));
 }
 
 MachineFunctionInfo *SBFTargetMachine::createMachineFunctionInfo(

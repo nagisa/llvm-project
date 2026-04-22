@@ -13,13 +13,13 @@
 #ifndef LLVM_LIB_TARGET_SBF_MCTARGETDESC_SBFMCASMINFO_H
 #define LLVM_LIB_TARGET_SBF_MCTARGETDESC_SBFMCASMINFO_H
 
-#include "llvm/MC/MCAsmInfo.h"
+#include "llvm/MC/MCAsmInfoELF.h"
 #include "llvm/TargetParser/Triple.h"
 
 namespace llvm {
 
 // TODO: This should likely be subclassing MCAsmInfoELF.
-class SBFMCAsmInfo : public MCAsmInfo {
+class SBFMCAsmInfo : public MCAsmInfoELF {
 public:
   explicit SBFMCAsmInfo(const Triple &TT, const MCTargetOptions &Options);
 

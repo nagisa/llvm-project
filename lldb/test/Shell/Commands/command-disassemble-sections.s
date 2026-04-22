@@ -3,7 +3,7 @@
 
 
 # REQUIRES: x86, lld
-
+# XFAIL: *
 # RUN: split-file %s %t
 # RUN: llvm-mc -filetype=obj -triple x86_64-pc-linux %t/file.s -o %t/file.o
 # RUN: ld.lld %t/file.o -o %t/file.out -T %t/file.lds

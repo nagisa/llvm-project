@@ -4,16 +4,6 @@ permissions:
   contents: read
 
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-      # When a PR is closed, we still start this workflow, but then skip
-      # all the jobs, which makes it effectively a no-op.  The reason to
-      # do this is that it allows us to take advantage of concurrency groups
-      # to cancel in progress CI jobs whenever the PR is closed.
-      - closed
   push:
     branches:
       - 'release/**'

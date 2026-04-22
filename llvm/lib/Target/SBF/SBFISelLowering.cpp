@@ -42,7 +42,7 @@ static void fail(const SDLoc &DL, SelectionDAG &DAG, const Twine &Msg) {
 
 SBFTargetLowering::SBFTargetLowering(const TargetMachine &TM,
                                      const SBFSubtarget &STI)
-    : TargetLowering(TM), Subtarget(&STI) {
+    : TargetLowering(TM, STI), Subtarget(&STI) {
 
   // Set up the register classes.
   addRegisterClass(MVT::i64, &SBF::GPRRegClass);
